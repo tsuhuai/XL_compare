@@ -19,7 +19,8 @@
     <EmbeddedResource Include="compare.png" />
     <EmbeddedResource Include="swap.png" />
     <EmbeddedResource Include="sync.png" />
-	  <EmbeddedResource Include="load_file.png" />
+	<EmbeddedResource Include="load_file.png" />
+	<EmbeddedResource Include="save_file.png" />
   </ItemGroup>  
 
 </Project>
