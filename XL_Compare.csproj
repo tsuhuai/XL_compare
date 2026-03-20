@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- 使用最新 SDK 指定 .NET 8 視窗版 -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<ApplicationIcon>XL_compare.ico</ApplicationIcon>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 自動處理 Excel 的輕量套件，對應 Python 的 openpyxl -->
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- 宣告這三個檔案為內嵌資源 -->
+    <EmbeddedResource Include="compare.png" />
+    <EmbeddedResource Include="swap.png" />
+    <EmbeddedResource Include="sync.png" />
+	  <EmbeddedResource Include="load_file.png" />
+  </ItemGroup>  
+
+</Project>
