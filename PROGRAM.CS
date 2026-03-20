@@ -28,6 +28,7 @@ namespace XLCompareApp
         private DataGridView grid1 = new(), grid2 = new();
         private Button btnCompare = new(), btnSyncToggle = new(), btnSwap = new();
         private Button btnBrowse1 = new(), btnBrowse2 = new();
+        private Button btnSave1 = new(), btnSave2 = new();
         private SplitContainer splitContainer = new();
 
         private bool isSyncEnabled = true;
@@ -46,7 +47,7 @@ namespace XLCompareApp
         private void SetupDynamicLayout()
         {
             Panel topPanel = new Panel {
-                Dock = DockStyle.Top, Height = 180,
+                Dock = DockStyle.Top, Height = 165,
                 BackColor = Color.FromArgb(245, 245, 245), BorderStyle = BorderStyle.FixedSingle
             };
 
@@ -64,7 +65,6 @@ namespace XLCompareApp
                                 Bitmap resized = new Bitmap(w, h);
                                 using (Graphics g = Graphics.FromImage(resized)) {
                                     g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                                     g.DrawImage(original, 0, 0, w, h);
                                 }
                                 return resized;
@@ -88,10 +88,9 @@ namespace XLCompareApp
                 btn.Image = GetResourceImage(imgName, 45, 45);
             }
 
-            // 修改：純圖示 Browse 按鈕樣式
             void StyleBrowseIconOnly(Button btn, string imgName) {
-                btn.Size = new Size(36, 24); // 正方形或接近正方形
-                btn.Text = ""; // 不需要文字
+                btn.Size = new Size(36, 26);
+                btn.Text = ""; 
                 btn.BackColor = Color.White;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderColor = Color.Silver;
@@ -112,10 +111,12 @@ namespace XLCompareApp
             Label lbl1 = new Label { Text = "File 1:", AutoSize = true, Font = new Font("Segoe UI", 9, FontStyle.Bold) };
             Label lblS1 = new Label { Text = "Sheet:", AutoSize = true, ForeColor = Color.DimGray };
             StyleBrowseIconOnly(btnBrowse1, "load_file.png");
+            StyleBrowseIconOnly(btnSave1, "save_file.png");
 
             Label lbl2 = new Label { Text = "File 2:", AutoSize = true, Font = new Font("Segoe UI", 9, FontStyle.Bold) };
             Label lblS2 = new Label { Text = "Sheet:", AutoSize = true, ForeColor = Color.DimGray };
             StyleBrowseIconOnly(btnBrowse2, "load_file.png");
+            StyleBrowseIconOnly(btnSave2, "save_file.png");
 
             txtFile1.ReadOnly = txtFile2.ReadOnly = true;
             comboSheet1.Width = 120; comboSheet1.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -124,26 +125,31 @@ namespace XLCompareApp
             this.Resize += (s, e) => {
                 if (this.WindowState == FormWindowState.Minimized) return;
                 int midX = topPanel.ClientSize.Width / 2;
-                // 因為按鈕變窄了，inputWidth 可以稍微加寬
-                int inputWidth = midX - 120; 
+                int inputWidth = midX - 200; 
                 if (inputWidth < 100) inputWidth = 100;
 
-                lbl1.Location = new Point(margin, 115);
-                txtFile1.Bounds = new Rectangle(margin + 50, 112, inputWidth, 25);
-                btnBrowse1.Location = new Point(txtFile1.Right + 3, 111);
-                lblS1.Location = new Point(margin, 148);
-                comboSheet1.Location = new Point(margin + 60, 145);
+                lbl1.Location = new Point(margin, 100);
+                txtFile1.Bounds = new Rectangle(margin + 50, 100, inputWidth, 25);
+                btnBrowse1.Location = new Point(txtFile1.Right + 3, 99);
+                btnSave1.Location = new Point(btnBrowse1.Right + 3, 99);
+                lblS1.Location = new Point(margin, 130);
+                comboSheet1.Location = new Point(margin + 50, 130);
 
-                lbl2.Location = new Point(midX + margin, 115);
-                txtFile2.Bounds = new Rectangle(midX + margin + 50, 112, inputWidth, 25);
-                btnBrowse2.Location = new Point(txtFile2.Right + 3, 111);
-                lblS2.Location = new Point(midX + margin, 148);
-                comboSheet2.Location = new Point(midX + margin + 60, 145);
+                lbl2.Location = new Point(midX + margin, 100);
+                txtFile2.Bounds = new Rectangle(midX + margin + 50, 100, inputWidth, 25);
+                btnBrowse2.Location = new Point(txtFile2.Right + 3, 99);
+                btnSave2.Location = new Point(btnBrowse2.Right + 3, 99);
+                lblS2.Location = new Point(midX + margin, 130);
+                comboSheet2.Location = new Point(midX + margin + 50, 130);
+                
                 splitContainer.SplitterDistance = midX;
             };
 
             btnBrowse1.Click += (s, e) => LoadExcel(txtFile1, comboSheet1);
             btnBrowse2.Click += (s, e) => LoadExcel(txtFile2, comboSheet2);
+            btnSave1.Click += (s, e) => SaveExcel(txtFile1.Text, comboSheet1.Text, grid1);
+            btnSave2.Click += (s, e) => SaveExcel(txtFile2.Text, comboSheet2.Text, grid2);
+            
             comboSheet1.SelectedIndexChanged += (s, e) => DisplaySheet(txtFile1.Text, comboSheet1.Text, grid1);
             comboSheet2.SelectedIndexChanged += (s, e) => DisplaySheet(txtFile2.Text, comboSheet2.Text, grid2);
             btnCompare.Click += RunComparison;
@@ -168,9 +174,9 @@ namespace XLCompareApp
                 try {
                     txtFile1.Text = f2; txtFile2.Text = f1;
                     comboSheet1.Items.Clear(); comboSheet1.Items.AddRange(items2);
-                    if (comboSheet1.Items.Count > 0) comboSheet1.SelectedIndex = idx2;
+                    if (comboSheet1.Items.Count > 0) comboSheet1.SelectedIndex = Math.Min(idx2, comboSheet1.Items.Count-1);
                     comboSheet2.Items.Clear(); comboSheet2.Items.AddRange(items1);
-                    if (comboSheet2.Items.Count > 0) comboSheet2.SelectedIndex = idx1;
+                    if (comboSheet2.Items.Count > 0) comboSheet2.SelectedIndex = Math.Min(idx1, comboSheet2.Items.Count-1);
                     grid1.DataSource = ds2; grid2.DataSource = ds1;
                     for (int i = 0; i < grid1.ColumnCount && i < widths2.Length; i++) grid1.Columns[i].Width = widths2[i];
                     for (int i = 0; i < grid2.ColumnCount && i < widths1.Length; i++) grid2.Columns[i].Width = widths1[i];
@@ -181,7 +187,12 @@ namespace XLCompareApp
                 ResetGridStyle(grid1); ResetGridStyle(grid2);
             };
 
-            topPanel.Controls.AddRange(new Control[] { btnCompare, btnSwap, btnSyncToggle, lbl1, txtFile1, btnBrowse1, lblS1, comboSheet1, lbl2, txtFile2, btnBrowse2, lblS2, comboSheet2 });
+            topPanel.Controls.AddRange(new Control[] { 
+                btnCompare, btnSwap, btnSyncToggle, 
+                lbl1, txtFile1, btnBrowse1, btnSave1, lblS1, comboSheet1, 
+                lbl2, txtFile2, btnBrowse2, btnSave2, lblS2, comboSheet2 
+            });
+
             splitContainer = new SplitContainer { Dock = DockStyle.Fill, Orientation = Orientation.Vertical, BorderStyle = BorderStyle.Fixed3D };
             ConfigGrid(grid1); ConfigGrid(grid2);
             
@@ -258,6 +269,28 @@ namespace XLCompareApp
                 g.DataSource = dt; 
                 g.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells); 
             } catch { } 
+        }
+
+        private void SaveExcel(string filePath, string sheetName, DataGridView g) {
+            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(sheetName) || g.DataSource == null) {
+                MessageBox.Show("No data to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            try {
+                using var wb = new XLWorkbook(filePath);
+                var ws = wb.Worksheet(sheetName);
+                DataTable dt = (DataTable)g.DataSource;
+                for (int i = 0; i < dt.Columns.Count; i++) ws.Cell(1, i + 1).Value = dt.Columns[i].ColumnName;
+                for (int r = 0; r < dt.Rows.Count; r++) {
+                    for (int c = 0; c < dt.Columns.Count; c++) {
+                        ws.Cell(r + 2, c + 1).Value = dt.Rows[r][c]?.ToString();
+                    }
+                }
+                wb.Save();
+                MessageBox.Show($"Saved successfully!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            } catch (Exception ex) {
+                MessageBox.Show("Save failed: " + ex.Message);
+            }
         }
 
         private void ResetGridStyle(DataGridView g) { 
