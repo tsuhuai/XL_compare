@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <!-- 自動處理 Excel 的輕量套件，對應 Python 的 openpyxl -->
-    <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
   </ItemGroup>
   <ItemGroup>
     <!-- 宣告這三個檔案為內嵌資源 -->
@@ -21,6 +21,8 @@
     <EmbeddedResource Include="sync.png" />
 	<EmbeddedResource Include="load_file.png" />
 	<EmbeddedResource Include="save_file.png" />
+	<EmbeddedResource Include="ignore.png" />
+	<EmbeddedResource Include="save_as.png" />
   </ItemGroup>  
 
 </Project>
