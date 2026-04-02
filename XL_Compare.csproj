@@ -2,27 +2,30 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <!-- 使用最新 SDK 指定 .NET 8 視窗版 -->
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<ApplicationIcon>XL_compare.ico</ApplicationIcon>
+    <ApplicationIcon>XL_compare.ico</ApplicationIcon>
+    
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- 自動處理 Excel 的輕量套件，對應 Python 的 openpyxl -->
     <PackageReference Include="ClosedXML" Version="0.105.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <!-- 宣告這三個檔案為內嵌資源 -->
     <EmbeddedResource Include="compare.png" />
     <EmbeddedResource Include="swap.png" />
     <EmbeddedResource Include="sync.png" />
-	<EmbeddedResource Include="load_file.png" />
-	<EmbeddedResource Include="save_file.png" />
-	<EmbeddedResource Include="ignore.png" />
-	<EmbeddedResource Include="save_as.png" />
-  </ItemGroup>  
+    <EmbeddedResource Include="load_file.png" />
+    <EmbeddedResource Include="save_file.png" />
+    <EmbeddedResource Include="save_as.png" />
+    <EmbeddedResource Include="ignore.png" />
+  </ItemGroup>
 
 </Project>
